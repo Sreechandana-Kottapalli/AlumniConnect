@@ -38,11 +38,12 @@ export default function AlumniRequestPanel() {
   const [page, setPage] = useState(1);
   const [emailActionHandled, setEmailActionHandled] = useState(false);
 
-  const loadStats = () =>
+  const loadStats = useCallback(() =>
     referralAPI
       .getStats()
       .then(({ data }) => setStats(data.data))
-      .catch(() => {});
+      .catch(() => {}),
+  []);
 
   const loadRequests = useCallback(async () => {
     setLoading(true);
@@ -65,7 +66,7 @@ export default function AlumniRequestPanel() {
 
   useEffect(() => {
     loadStats();
-  }, []);
+  }, [loadStats]);
 
   useEffect(() => {
     loadRequests();

@@ -1,23 +1,6 @@
 const multer = require("multer");
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
-const cloudinary = require("../services/cloudinaryService");
 
-// Cloudinary storage for resumes
-const resumeStorage = new CloudinaryStorage({
-  cloudinary,
-  params: {
-    folder: "ncpl_alumni_connect/resumes",
-    allowed_formats: ["pdf"],
-    resource_type: "raw", // Required for non-image files (PDFs)
-    public_id: (req, file) => {
-      const timestamp = Date.now();
-      const userId = req.user?._id || "unknown";
-      return `resume_${userId}_${timestamp}`;
-    },
-  },
-});
-
-// File filter – only allow PDF
+// Store files in memory so we can upload the buffer directly to Supabase Storage
 const pdfFilter = (req, file, cb) => {
   if (
     file.mimetype === "application/pdf" ||
@@ -30,7 +13,7 @@ const pdfFilter = (req, file, cb) => {
 };
 
 const uploadResume = multer({
-  storage: resumeStorage,
+  storage: multer.memoryStorage(),
   fileFilter: pdfFilter,
   limits: {
     fileSize: 5 * 1024 * 1024, // 5 MB max

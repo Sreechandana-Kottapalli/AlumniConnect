@@ -1,26 +1,11 @@
 const errorHandler = (err, req, res, next) => {
   let statusCode = err.statusCode || 500;
-  let message = err.message || "Internal Server Error";
+  let message    = err.message   || "Internal Server Error";
 
-  // Mongoose bad ObjectId
-  if (err.name === "CastError") {
-    statusCode = 400;
-    message = `Resource not found with id: ${err.value}`;
-  }
-
-  // Mongoose duplicate key
-  if (err.code === 11000) {
+  // Supabase / PostgreSQL unique-violation (code 23505)
+  if (err.code === "23505") {
     statusCode = 409;
-    const field = Object.keys(err.keyValue)[0];
-    message = `${field.charAt(0).toUpperCase() + field.slice(1)} already exists.`;
-  }
-
-  // Mongoose validation error
-  if (err.name === "ValidationError") {
-    statusCode = 422;
-    message = Object.values(err.errors)
-      .map((e) => e.message)
-      .join(", ");
+    message = "A record with that value already exists.";
   }
 
   // JWT errors
@@ -31,6 +16,12 @@ const errorHandler = (err, req, res, next) => {
   if (err.name === "TokenExpiredError") {
     statusCode = 401;
     message = "Token has expired.";
+  }
+
+  // Multer file-size error
+  if (err.code === "LIMIT_FILE_SIZE") {
+    statusCode = 400;
+    message = "File is too large. Maximum size is 5 MB.";
   }
 
   res.status(statusCode).json({

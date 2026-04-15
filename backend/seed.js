@@ -1,148 +1,154 @@
 /**
- * Database seeder – run with: node seed.js
- * Seeds sample alumni and a demo trainee user.
+ * Database seeder – run with: npm run seed
+ * Clears and repopulates the alumni table and creates a demo trainee user.
+ * Requires SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in your .env file.
  */
 require("dotenv").config();
-const mongoose = require("mongoose");
-const Alumni = require("./models/Alumni");
-const User = require("./models/User");
+const bcrypt = require("bcryptjs");
+const { createClient } = require("@supabase/supabase-js");
 
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
+
+// ── Alumni seed data (snake_case to match DB columns) ────────────────────────
 const ALUMNI_SEED = [
   {
-    fullName: "Priya Sharma",
+    full_name: "Priya Sharma",
     email: "priya.sharma@example.com",
     company: "TCS",
-    jobRole: "Software Engineer",
+    job_role: "Software Engineer",
     technologies: ["React", "Node.js", "MongoDB", "JavaScript"],
-    yearsOfExperience: 2,
-    linkedinProfile: "https://linkedin.com/in/priya-sharma",
-    availabilityStatus: "available",
-    profilePhoto: "",
+    years_of_experience: 2,
+    linkedin_profile: "https://linkedin.com/in/priya-sharma",
+    availability_status: "available",
+    profile_photo: "",
     batch: "2022",
     location: "Hyderabad",
     domain: "Web Development",
     bio: "Placed from NCPL in 2022. Happy to mentor trainees in full stack development.",
-    avatarInitials: "PS",
-    avatarColor: "#1A3C6E",
+    avatar_initials: "PS",
+    avatar_color: "#1A3C6E",
   },
   {
-    fullName: "Ravi Kumar",
+    full_name: "Ravi Kumar",
     email: "ravi.kumar@example.com",
     company: "Infosys",
-    jobRole: "Java Developer",
+    job_role: "Java Developer",
     technologies: ["Java", "Spring Boot", "MySQL", "Hibernate"],
-    yearsOfExperience: 3,
-    linkedinProfile: "https://linkedin.com/in/ravi-kumar",
-    availabilityStatus: "available",
-    profilePhoto: "",
+    years_of_experience: 3,
+    linkedin_profile: "https://linkedin.com/in/ravi-kumar",
+    availability_status: "available",
+    profile_photo: "",
     batch: "2021",
     location: "Bangalore",
     domain: "Backend Development",
     bio: "NCPL trained me from scratch. Now working at Infosys. Can guide anyone in Java.",
-    avatarInitials: "RK",
-    avatarColor: "#7C3AED",
+    avatar_initials: "RK",
+    avatar_color: "#7C3AED",
   },
   {
-    fullName: "Ananya Reddy",
+    full_name: "Ananya Reddy",
     email: "ananya.reddy@example.com",
     company: "Wipro",
-    jobRole: "Data Analyst",
+    job_role: "Data Analyst",
     technologies: ["Python", "SQL", "Power BI", "Pandas"],
-    yearsOfExperience: 1,
-    linkedinProfile: "https://linkedin.com/in/ananya-reddy",
-    availabilityStatus: "busy",
-    profilePhoto: "",
+    years_of_experience: 1,
+    linkedin_profile: "https://linkedin.com/in/ananya-reddy",
+    availability_status: "busy",
+    profile_photo: "",
     batch: "2023",
     location: "Pune",
     domain: "Data Science",
     bio: "Got placed at Wipro after NCPL training. Looking forward to helping current trainees.",
-    avatarInitials: "AR",
-    avatarColor: "#059669",
+    avatar_initials: "AR",
+    avatar_color: "#059669",
   },
   {
-    fullName: "Mohammed Farhan",
+    full_name: "Mohammed Farhan",
     email: "farhan.m@example.com",
     company: "Capgemini",
-    jobRole: "QA Engineer",
+    job_role: "QA Engineer",
     technologies: ["Selenium", "Jira", "Manual Testing", "Postman"],
-    yearsOfExperience: 2,
-    linkedinProfile: "https://linkedin.com/in/mohammed-farhan",
-    availabilityStatus: "available",
-    profilePhoto: "",
+    years_of_experience: 2,
+    linkedin_profile: "https://linkedin.com/in/mohammed-farhan",
+    availability_status: "available",
+    profile_photo: "",
     batch: "2022",
     location: "Chennai",
     domain: "Testing & QA",
     bio: "QA Engineer at Capgemini. Can help with testing strategies and interview prep.",
-    avatarInitials: "MF",
-    avatarColor: "#DC2626",
+    avatar_initials: "MF",
+    avatar_color: "#DC2626",
   },
   {
-    fullName: "Sneha Patel",
+    full_name: "Sneha Patel",
     email: "sneha.patel@example.com",
     company: "HCL Technologies",
-    jobRole: "DevOps Engineer",
+    job_role: "DevOps Engineer",
     technologies: ["AWS", "Docker", "Jenkins", "Kubernetes"],
-    yearsOfExperience: 3,
-    linkedinProfile: "https://linkedin.com/in/sneha-patel",
-    availabilityStatus: "available",
-    profilePhoto: "",
+    years_of_experience: 3,
+    linkedin_profile: "https://linkedin.com/in/sneha-patel",
+    availability_status: "available",
+    profile_photo: "",
     batch: "2021",
     location: "Mumbai",
     domain: "DevOps & Cloud",
     bio: "DevOps at HCL. NCPL gave me the foundation. Happy to mentor anyone interested in cloud.",
-    avatarInitials: "SP",
-    avatarColor: "#F4A823",
+    avatar_initials: "SP",
+    avatar_color: "#F4A823",
   },
   {
-    fullName: "Kiran Babu",
+    full_name: "Kiran Babu",
     email: "kiran.babu@example.com",
     company: "Tech Mahindra",
-    jobRole: "Android Developer",
+    job_role: "Android Developer",
     technologies: ["Kotlin", "Android", "Firebase", "Jetpack Compose"],
-    yearsOfExperience: 1,
-    linkedinProfile: "https://linkedin.com/in/kiran-babu",
-    availabilityStatus: "available",
-    profilePhoto: "",
+    years_of_experience: 1,
+    linkedin_profile: "https://linkedin.com/in/kiran-babu",
+    availability_status: "available",
+    profile_photo: "",
     batch: "2023",
     location: "Hyderabad",
     domain: "Mobile Development",
     bio: "Android dev at Tech Mahindra. Placed from NCPL batch 2023. Ready to guide!",
-    avatarInitials: "KB",
-    avatarColor: "#0891B2",
+    avatar_initials: "KB",
+    avatar_color: "#0891B2",
   },
   {
-    fullName: "Divya Menon",
+    full_name: "Divya Menon",
     email: "divya.menon@example.com",
     company: "Accenture",
-    jobRole: "React Developer",
+    job_role: "React Developer",
     technologies: ["React", "TypeScript", "Redux", "GraphQL"],
-    yearsOfExperience: 2,
-    linkedinProfile: "https://linkedin.com/in/divya-menon",
-    availabilityStatus: "available",
-    profilePhoto: "",
+    years_of_experience: 2,
+    linkedin_profile: "https://linkedin.com/in/divya-menon",
+    availability_status: "available",
+    profile_photo: "",
     batch: "2022",
     location: "Kochi",
     domain: "Web Development",
     bio: "Frontend developer at Accenture specialising in React. NCPL batch 2022.",
-    avatarInitials: "DM",
-    avatarColor: "#BE185D",
+    avatar_initials: "DM",
+    avatar_color: "#BE185D",
   },
   {
-    fullName: "Arjun Nair",
+    full_name: "Arjun Nair",
     email: "arjun.nair@example.com",
     company: "Cognizant",
-    jobRole: "Full Stack Developer",
+    job_role: "Full Stack Developer",
     technologies: ["Angular", "Node.js", "PostgreSQL", "Docker"],
-    yearsOfExperience: 4,
-    linkedinProfile: "https://linkedin.com/in/arjun-nair",
-    availabilityStatus: "available",
-    profilePhoto: "",
+    years_of_experience: 4,
+    linkedin_profile: "https://linkedin.com/in/arjun-nair",
+    availability_status: "available",
+    profile_photo: "",
     batch: "2020",
     location: "Trivandrum",
     domain: "Web Development",
     bio: "Full-stack at Cognizant. Love solving complex problems. NCPL alumni 2020.",
-    avatarInitials: "AN",
-    avatarColor: "#0D9488",
+    avatar_initials: "AN",
+    avatar_color: "#0D9488",
   },
 ];
 
@@ -157,26 +163,56 @@ const DEMO_USER = {
 
 async function seed() {
   try {
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log("Connected to MongoDB");
+    console.log("Starting Supabase seed...");
 
-    // Clear existing data
-    await Alumni.deleteMany({});
-    await User.deleteMany({});
-    console.log("Cleared existing data");
+    // Clear existing data (referral_requests first due to FK constraints)
+    const { error: delRefErr } = await supabase
+      .from("referral_requests")
+      .delete()
+      .neq("id", "00000000-0000-0000-0000-000000000000"); // delete all rows
+    if (delRefErr) throw delRefErr;
+
+    const { error: delAlumniErr } = await supabase
+      .from("alumni")
+      .delete()
+      .neq("id", "00000000-0000-0000-0000-000000000000");
+    if (delAlumniErr) throw delAlumniErr;
+
+    const { error: delUserErr } = await supabase
+      .from("users")
+      .delete()
+      .neq("id", "00000000-0000-0000-0000-000000000000");
+    if (delUserErr) throw delUserErr;
+
+    console.log("Cleared existing data.");
 
     // Insert alumni
-    const inserted = await Alumni.insertMany(ALUMNI_SEED);
-    console.log(`Seeded ${inserted.length} alumni records`);
+    const { data: insertedAlumni, error: alumniErr } = await supabase
+      .from("alumni")
+      .insert(ALUMNI_SEED)
+      .select("id, full_name");
+    if (alumniErr) throw alumniErr;
+    console.log(`Seeded ${insertedAlumni.length} alumni records.`);
 
-    // Create demo user
-    await User.create(DEMO_USER);
+    // Create demo user (with hashed password)
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(DEMO_USER.password, salt);
+
+    const { error: userErr } = await supabase.from("users").insert({
+      name:   DEMO_USER.name,
+      email:  DEMO_USER.email,
+      password: hashedPassword,
+      role:   DEMO_USER.role,
+      batch:  DEMO_USER.batch,
+      domain: DEMO_USER.domain,
+    });
+    if (userErr) throw userErr;
+
     console.log(`Demo user created: ${DEMO_USER.email} / ${DEMO_USER.password}`);
-
     console.log("\nSeeding complete!");
     process.exit(0);
   } catch (err) {
-    console.error("Seeding failed:", err);
+    console.error("Seeding failed:", err.message || err);
     process.exit(1);
   }
 }
