@@ -61,7 +61,6 @@ export default function StatusTracker({ status, statusHistory = [] }) {
         {STEPS.map((step, idx) => {
           const done = idx < currentIdx;
           const active = idx === currentIdx;
-          const future = idx > currentIdx;
 
           return (
             <div key={step.key} className="flex flex-col items-center gap-1.5 flex-1">
@@ -101,7 +100,7 @@ export default function StatusTracker({ status, statusHistory = [] }) {
                 <span className="font-semibold capitalize">{entry.status.replace("_", " ")}</span>
                 {entry.note && ` — ${entry.note}`}
                 {" · "}
-                {new Date(entry.changedAt).toLocaleDateString("en-IN", {
+                {new Date(entry.changedAt || entry.changed_at).toLocaleDateString("en-IN", {
                   day: "numeric", month: "short", year: "numeric",
                 })}
               </span>
