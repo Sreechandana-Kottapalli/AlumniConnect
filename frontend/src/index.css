@@ -1,0 +1,7 @@
+/*
+ * Tailwind CSS utilities – loaded without the preflight base layer
+ * (preflight is disabled in tailwind.config.js to avoid overriding App.css).
+ * Existing App.css styles are unaffected.
+ */
+@tailwind components;
+@tailwind utilities;

@@ -1,9 +1,17 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import LoginPage from "./pages/LoginPage";
 import SearchPage from "./pages/SearchPage";
 import AlumniProfilePage from "./pages/AlumniProfilePage";
+import ReferralDashboard from "./pages/ReferralDashboard";
+import AlumniRequestPanel from "./pages/AlumniRequestPanel";
+import RequestForm from "./pages/RequestForm";
 
 function PrivateRoute({ children }) {
   const { isAuthenticated, loading } = useAuth();
@@ -22,6 +30,7 @@ export default function App() {
     <AuthProvider>
       <Router>
         <Routes>
+          {/* Public */}
           <Route
             path="/login"
             element={
@@ -30,6 +39,8 @@ export default function App() {
               </PublicRoute>
             }
           />
+
+          {/* Candidate routes */}
           <Route
             path="/search"
             element={
@@ -46,6 +57,34 @@ export default function App() {
               </PrivateRoute>
             }
           />
+          <Route
+            path="/referrals"
+            element={
+              <PrivateRoute>
+                <ReferralDashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/request/:alumniId"
+            element={
+              <PrivateRoute>
+                <RequestForm />
+              </PrivateRoute>
+            }
+          />
+
+          {/* Alumni route */}
+          <Route
+            path="/alumni/requests"
+            element={
+              <PrivateRoute>
+                <AlumniRequestPanel />
+              </PrivateRoute>
+            }
+          />
+
+          {/* Default */}
           <Route path="*" element={<Navigate to="/search" replace />} />
         </Routes>
       </Router>

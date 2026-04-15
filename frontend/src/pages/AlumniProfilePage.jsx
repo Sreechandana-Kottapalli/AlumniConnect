@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { alumniAPI } from "../services/api";
 import LoadingSpinner from "../components/LoadingSpinner";
@@ -106,6 +106,44 @@ export default function AlumniProfilePage() {
                       </a>
                     )}
                   </div>
+                </div>
+
+                {/* ── Referral / Reference CTA buttons ───────────────── */}
+                <div className="mt-5 flex flex-wrap gap-3">
+                  <Link
+                    to={`/request/${alumni._id}?type=referral`}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      padding: "10px 20px",
+                      background: "#1A3C6E",
+                      color: "#fff",
+                      borderRadius: "8px",
+                      fontSize: "13px",
+                      fontWeight: "700",
+                      textDecoration: "none",
+                    }}
+                  >
+                    💼 Request Referral
+                  </Link>
+                  <Link
+                    to={`/request/${alumni._id}?type=reference`}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      padding: "10px 20px",
+                      background: "#7C3AED",
+                      color: "#fff",
+                      borderRadius: "8px",
+                      fontSize: "13px",
+                      fontWeight: "700",
+                      textDecoration: "none",
+                    }}
+                  >
+                    📝 Request Reference
+                  </Link>
                 </div>
               </div>
 
