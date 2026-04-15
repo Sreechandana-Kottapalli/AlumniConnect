@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./App.css";
+import "./index.css";   // Tailwind utilities (no preflight)
+import "./App.css";     // Existing component styles
 import App from "./App";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
