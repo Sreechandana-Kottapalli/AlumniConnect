@@ -1,14 +1,10 @@
 require("dotenv").config();
-const express = require("express");
-const cors = require("cors");
-const connectDB = require("./config/db");
+const express      = require("express");
+const cors         = require("cors");
 const errorHandler = require("./middleware/errorHandler");
 const { globalLimiter } = require("./middleware/rateLimiter");
 
 const app = express();
-
-// Connect to MongoDB
-connectDB();
 
 // Middleware
 app.use(cors());
@@ -19,16 +15,16 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api", globalLimiter);
 
 // Routes
-app.use("/api/auth", require("./routes/auth"));
-app.use("/api/alumni", require("./routes/alumni"));
+app.use("/api/auth",     require("./routes/auth"));
+app.use("/api/alumni",   require("./routes/alumni"));
 app.use("/api/referrals", require("./routes/referral"));
-app.use("/api/upload", require("./routes/upload"));
+app.use("/api/upload",   require("./routes/upload"));
 
 // Health check
 app.get("/api/health", (req, res) => {
   res.json({
-    status: "ok",
-    message: "NCPL Alumni Connect API is running",
+    status:    "ok",
+    message:   "NCPL Alumni Connect API is running",
     timestamp: new Date().toISOString(),
   });
 });
