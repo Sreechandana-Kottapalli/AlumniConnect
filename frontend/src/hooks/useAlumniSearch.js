@@ -80,8 +80,7 @@ export function useAlumniSearch() {
       fetchResults(filters, sort, page);
     }, 350);
     return () => clearTimeout(debounceRef.current);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters, sort, page]);
+  }, [filters, sort, page, fetchResults]);
 
   const updateFilter = useCallback((key, value) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
