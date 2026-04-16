@@ -50,7 +50,7 @@ const ALUMNI_SEED = [
   },
   {
     full_name: "Ananya Reddy",
-    email: "sreechandanamakkapati@gmail.com",
+    email: "ananya@example.com",
     company: "Wipro",
     job_role: "Data Analyst",
     technologies: ["Python", "SQL", "Power BI", "Pandas"],
@@ -67,7 +67,7 @@ const ALUMNI_SEED = [
   },
   {
     full_name: "Mohammed Farhan",
-    email: "siva.gattuoo8@gmail.com",
+    email: "farhan@example.com",
     company: "Capgemini",
     job_role: "QA Engineer",
     technologies: ["Selenium", "Jira", "Manual Testing", "Postman"],
@@ -84,7 +84,7 @@ const ALUMNI_SEED = [
   },
   {
     full_name: "Sneha Patel",
-    email: "sreechandanamakkapati@gmail.com",
+    email: "sneha@example.com",
     company: "HCL Technologies",
     job_role: "DevOps Engineer",
     technologies: ["AWS", "Docker", "Jenkins", "Kubernetes"],
@@ -101,7 +101,7 @@ const ALUMNI_SEED = [
   },
   {
     full_name: "Kiran Babu",
-    email: "sreechandanamakkapati@gmail.com",
+    email: "kiran@example.com",
     company: "Tech Mahindra",
     job_role: "Android Developer",
     technologies: ["Kotlin", "Android", "Firebase", "Jetpack Compose"],
@@ -118,7 +118,7 @@ const ALUMNI_SEED = [
   },
   {
     full_name: "Divya Menon",
-    email: "sreechandanamakkapati@gmail.com",
+    email: "divya@example.com",
     company: "Accenture",
     job_role: "React Developer",
     technologies: ["React", "TypeScript", "Redux", "GraphQL"],
@@ -135,7 +135,7 @@ const ALUMNI_SEED = [
   },
   {
     full_name: "Arjun Nair",
-    email: "sreechandanamakkapati@gmail.com",
+    email: "arjun@example.com",
     company: "Cognizant",
     job_role: "Full Stack Developer",
     technologies: ["Angular", "Node.js", "PostgreSQL", "Docker"],
