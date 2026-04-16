@@ -33,7 +33,7 @@ const ALUMNI_SEED = [
   },
   {
     full_name: "Ravi Kumar",
-    email: "sreechandanamakkapati@gmail.com",
+    email: "siva.gattu007@gmail.com",
     company: "Infosys",
     job_role: "Java Developer",
     technologies: ["Java", "Spring Boot", "MySQL", "Hibernate"],
