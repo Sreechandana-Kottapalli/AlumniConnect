@@ -3,6 +3,7 @@ const express      = require("express");
 const cors         = require("cors");
 const errorHandler = require("./middleware/errorHandler");
 const { globalLimiter } = require("./middleware/rateLimiter");
+const { ensureBucket } = require("./services/storageService");
 
 const app = express();
 
@@ -38,6 +39,11 @@ app.use((req, res) => {
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
+
+// Warm up: ensure storage bucket exists before accepting requests
+ensureBucket().catch((err) =>
+  console.error("[Storage] Startup bucket check failed:", err.message)
+);
 
 // Start server only when run directly (not when imported by Vercel)
 if (require.main === module) {

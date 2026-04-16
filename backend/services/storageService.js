@@ -6,6 +6,37 @@ const supabase = require("../config/supabase");
 
 const BUCKET = process.env.SUPABASE_STORAGE_BUCKET || "resumes";
 
+// Module-level flag so we only check/create the bucket once per process
+let _bucketReady = false;
+
+/**
+ * Ensures the storage bucket exists, creating it if necessary.
+ * Called lazily before the first upload operation.
+ */
+const ensureBucket = async () => {
+  if (_bucketReady) return;
+
+  const { error: getError } = await supabase.storage.getBucket(BUCKET);
+
+  if (getError) {
+    const msg = (getError.message || "").toLowerCase();
+    if (msg.includes("not found") || msg.includes("does not exist") || msg.includes("no bucket")) {
+      console.log(`[Storage] Bucket "${BUCKET}" not found — creating it now.`);
+      const { error: createError } = await supabase.storage.createBucket(BUCKET, {
+        public: true,
+        allowedMimeTypes: ["application/pdf"],
+        fileSizeLimit: 5 * 1024 * 1024, // 5 MB
+      });
+      if (createError) throw new Error(`Failed to create storage bucket "${BUCKET}": ${createError.message}`);
+      console.log(`[Storage] Bucket "${BUCKET}" created successfully.`);
+    } else {
+      throw new Error(`Failed to access storage bucket "${BUCKET}": ${getError.message}`);
+    }
+  }
+
+  _bucketReady = true;
+};
+
 /**
  * Upload a resume PDF buffer to Supabase Storage.
  * @param {Buffer} buffer  - File buffer from multer memoryStorage
@@ -13,6 +44,8 @@ const BUCKET = process.env.SUPABASE_STORAGE_BUCKET || "resumes";
  * @returns {{ url: string, path: string }}
  */
 const uploadResume = async (buffer, userId) => {
+  await ensureBucket();
+
   const timestamp = Date.now();
   const path = `resume_${userId}_${timestamp}.pdf`;
 
@@ -47,4 +80,4 @@ const deleteResume = async (path) => {
   if (error) throw error;
 };
 
-module.exports = { uploadResume, deleteResume };
+module.exports = { uploadResume, deleteResume, ensureBucket };
