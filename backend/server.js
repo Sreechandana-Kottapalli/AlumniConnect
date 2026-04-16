@@ -21,6 +21,7 @@ app.use("/api/auth",     require("./routes/auth"));
 app.use("/api/alumni",   require("./routes/alumni"));
 app.use("/api/referrals", require("./routes/referral"));
 app.use("/api/upload",   require("./routes/upload"));
+app.use("/api/schedule", require("./routes/schedule")); // public — no auth
 
 // Health check — surfaces missing env vars for easier debugging
 app.get("/api/health", (req, res) => {

@@ -69,6 +69,7 @@ const buildLinks = (requestId) => {
     acceptLink: `${base}/alumni/requests?action=accept&id=${requestId}`,
     rejectLink: `${base}/alumni/requests?action=reject&id=${requestId}`,
     requestInfoLink: `${base}/alumni/requests?action=info&id=${requestId}`,
+    scheduleLink: `${base}/schedule/${requestId}`,
     dashboardLink: `${base}/referrals`,
   };
 };
@@ -95,6 +96,7 @@ const notifyAlumniNewRequest = async ({ request, alumni, candidate }) => {
     acceptLink: links.acceptLink,
     rejectLink: links.rejectLink,
     requestInfoLink: links.requestInfoLink,
+    scheduleLink: links.scheduleLink,
     requestId: request._id,
   });
 
@@ -223,6 +225,42 @@ const notifyCandidateCompleted = async ({ request, alumni, candidate }) => {
   });
 };
 
+/**
+ * Notify candidate that the alumni has shared their availability for a meeting.
+ * The `request` object must be populated (from findByIdForSchedule) so that
+ * request.candidate.email and request.alumni.fullName are available.
+ */
+const notifyCandidateAvailabilitySet = async ({ request, availability }) => {
+  const { dashboardLink } = buildLinks(request._id);
+  const candidateEmail = request.candidate?.email;
+  const candidateName  = request.candidate?.name  || "Candidate";
+  const alumniName     = request.alumni?.fullName  || "Alumni";
+  const alumniCompany  = request.alumni?.company   || "";
+
+  if (!candidateEmail) {
+    throw new Error("notifyCandidateAvailabilitySet: candidate email missing from request object.");
+  }
+
+  const html = templates.availabilityNotificationToCandidate({
+    candidateName,
+    alumniName,
+    alumniCompany,
+    requestType:      request.requestType,
+    targetJobRole:    request.targetJobRole,
+    targetCompany:    request.targetCompany,
+    availabilityDate: availability.date,
+    availabilityTime: availability.time,
+    availabilityNotes: availability.notes || null,
+    dashboardLink,
+  });
+
+  await sendMail({
+    to: candidateEmail,
+    subject: `${alumniName} has shared their availability — ${request.requestType === "referral" ? "Referral" : "Reference"} Request`,
+    html,
+  });
+};
+
 module.exports = {
   validateEmailConfig,
   notifyAlumniNewRequest,
@@ -231,4 +269,5 @@ module.exports = {
   notifyCandidateRejected,
   notifyCandidateAdditionalInfo,
   notifyCandidateCompleted,
+  notifyCandidateAvailabilitySet,
 };

@@ -32,6 +32,7 @@ const mapRequest = (row) => {
     alumniResponse: row.alumni_response || null,
     additionalInfoRequest: row.additional_info_request || null,
     statusHistory: row.status_history || [],
+    alumniAvailability: row.alumni_availability || null,
     completedAt: row.completed_at || null,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -244,6 +245,51 @@ const updateStatus = async (id, { status, alumniResponse, additionalInfoRequest 
   return mapRequest(data);
 };
 
+// ── setAvailability ───────────────────────────────────────────────────────────
+// Stores alumni's proposed date/time in the alumni_availability JSONB column.
+// Requires: ALTER TABLE referral_requests ADD COLUMN IF NOT EXISTS alumni_availability JSONB;
+const setAvailability = async (id, { date, time, notes }) => {
+  const availability = {
+    date,
+    time,
+    notes: notes || null,
+    set_at: new Date().toISOString(),
+  };
+
+  const { error } = await supabase
+    .from("referral_requests")
+    .update({ alumni_availability: availability })
+    .eq("id", id);
+
+  if (error) throw error;
+  return availability;
+};
+
+// ── findByIdForSchedule ───────────────────────────────────────────────────────
+// Public (no-auth) lookup used by the schedule endpoint.
+// Returns populated candidate (with email) + alumni (with email).
+const findByIdForSchedule = async (id) => {
+  const { data, error } = await supabase
+    .from("referral_requests")
+    .select(
+      "*, " +
+        "candidate:users!candidate_id(id, name, email), " +
+        "alumni:alumni!alumni_id(id, full_name, company, job_role, email)"
+    )
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error) throw error;
+  if (!data) return null;
+
+  const mapped = mapRequest(data);
+  // Attach alumni email (not in the standard mapRequest shape)
+  if (data.alumni && typeof data.alumni === "object") {
+    mapped.alumni = { ...mapped.alumni, email: data.alumni.email };
+  }
+  return mapped;
+};
+
 // ── deleteById ────────────────────────────────────────────────────────────────
 const deleteById = async (id) => {
   const { error } = await supabase
@@ -293,10 +339,12 @@ const countByStatus = async (filter = {}) => {
 module.exports = {
   create,
   findById,
+  findByIdForSchedule,
   findByCandidate,
   findByAlumniIds,
   findAll,
   updateStatus,
+  setAvailability,
   deleteById,
   hasDuplicate,
   countByStatus,

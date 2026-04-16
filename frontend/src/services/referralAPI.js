@@ -27,6 +27,14 @@ export const referralAPI = {
   /** Admin: get all requests */
   adminGetAll: (params) => api.get("/referrals/admin/all", { params }),
 
+  // ── Scheduling (public — no auth token needed) ───────────────────────────
+
+  /** Get scheduling form info by request ID (public) */
+  getScheduleInfo: (requestId) => api.get(`/schedule/${requestId}`),
+
+  /** Alumni: submit availability for a meeting (public) */
+  submitAvailability: (requestId, data) => api.post(`/schedule/${requestId}`, data),
+
   // ── File Upload ──────────────────────────────────────────────────────────
 
   /**

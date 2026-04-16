@@ -109,6 +109,7 @@ const newRequestToAlumni = ({
   acceptLink,
   rejectLink,
   requestInfoLink,
+  scheduleLink,
   requestId,
 }) =>
   baseWrapper(`
@@ -167,11 +168,24 @@ const newRequestToAlumni = ({
     <p style="margin:0 0 8px;font-size:14px;font-weight:700;color:${BRAND.text};">
       Respond to this request:
     </p>
-    <p style="margin:0 0 24px;">
+    <p style="margin:0 0 16px;">
       ${actionBtn(acceptLink, "✓  Accept", BRAND.success)}
       ${actionBtn(rejectLink, "✗  Decline", BRAND.error)}
       ${actionBtn(requestInfoLink, "?  Request More Info", "#F59E0B")}
     </p>
+
+    <!-- Schedule Meeting -->
+    <div style="background:#F5F3FF;border:1px solid #DDD6FE;border-radius:8px;
+                padding:16px;margin-bottom:24px;">
+      <p style="margin:0 0 8px;font-size:13px;font-weight:700;color:#7C3AED;">
+        📅  SCHEDULE A MEETING
+      </p>
+      <p style="margin:0 0 12px;font-size:14px;color:${BRAND.text};line-height:1.6;">
+        If you'd like to connect with <strong>${candidateName}</strong> before deciding,
+        click below to share your preferred date and time. They will be notified immediately.
+      </p>
+      ${actionBtn(scheduleLink, "📅  Set My Availability", "#7C3AED")}
+    </div>
 
     <p style="font-size:12px;color:${BRAND.textSecondary};margin:0;">
       Request ID: <code>${requestId}</code> — You can also manage this request
@@ -390,10 +404,167 @@ const completionToCandidate = ({
     ${actionBtn(dashboardLink, "View Dashboard")}
   `);
 
+// ── Template 6: Submission Confirmation (to Candidate) ───────────────────
+const submissionConfirmationToCandidate = ({
+  candidateName,
+  alumniName,
+  alumniCompany,
+  alumniJobTitle,
+  requestType,
+  targetJobRole,
+  targetCompany,
+  jobDescriptionUrl,
+  linkedinUrl,
+  portfolioUrl,
+  personalMessage,
+  resumeUrl,
+  dashboardLink,
+}) =>
+  baseWrapper(`
+    <p style="font-size:16px;color:${BRAND.text};margin:0 0 8px;">
+      Hi <strong>${candidateName}</strong>,
+    </p>
+    <p style="font-size:22px;font-weight:800;color:${BRAND.primary};margin:0 0 8px;">
+      Request Submitted Successfully!
+    </p>
+    <p style="font-size:15px;color:${BRAND.textSecondary};margin:0 0 24px;line-height:1.6;">
+      Your <strong>${requestType === "referral" ? "Job Referral" : "Professional Reference"}</strong>
+      request has been sent to <strong>${alumniName}</strong>
+      (${alumniJobTitle} at ${alumniCompany}).
+      You will be notified once they respond.
+    </p>
+
+    <p style="margin:0 0 20px;">
+      ${badge(
+        requestType === "referral" ? "Job Referral Request" : "Professional Reference Request",
+        requestType === "referral" ? BRAND.primary : "#7C3AED"
+      )}
+    </p>
+
+    <div style="background:${BRAND.bg};border-radius:8px;padding:16px;margin-bottom:24px;">
+      <p style="margin:0 0 12px;font-size:13px;font-weight:700;
+                text-transform:uppercase;letter-spacing:.05em;color:${BRAND.textSecondary};">
+        REQUEST SUMMARY
+      </p>
+      <table cellpadding="0" cellspacing="0" style="width:100%;">
+        ${detailRow("Sent To", `${alumniName} — ${alumniJobTitle} at ${alumniCompany}`)}
+        ${detailRow("Request Type", requestType === "referral" ? "Job Referral" : "Professional Reference")}
+        ${detailRow("Target Role", targetJobRole)}
+        ${detailRow("Target Company", targetCompany)}
+        ${linkedinUrl ? detailRow("LinkedIn", `<a href="${linkedinUrl}" style="color:${BRAND.primary};">${linkedinUrl}</a>`) : ""}
+        ${portfolioUrl ? detailRow("Portfolio", `<a href="${portfolioUrl}" style="color:${BRAND.primary};">${portfolioUrl}</a>`) : ""}
+        ${jobDescriptionUrl ? detailRow("Job Link", `<a href="${jobDescriptionUrl}" style="color:${BRAND.primary};">View Job Description</a>`) : ""}
+        ${detailRow("Status", badge("Pending", "#F59E0B"))}
+      </table>
+    </div>
+
+    <div style="background:#EFF6FF;border-left:4px solid ${BRAND.primary};
+                padding:16px;border-radius:0 8px 8px 0;margin-bottom:24px;">
+      <p style="margin:0 0 6px;font-size:12px;font-weight:700;
+                text-transform:uppercase;letter-spacing:.05em;color:${BRAND.primary};">
+        YOUR MESSAGE
+      </p>
+      <p style="margin:0;font-size:14px;color:${BRAND.text};line-height:1.7;">
+        ${personalMessage}
+      </p>
+    </div>
+
+    <p style="margin:0 0 24px;">
+      ${actionBtn(resumeUrl, "📄  View Submitted Resume (PDF)", "#0891B2")}
+    </p>
+
+    <p style="font-size:14px;color:${BRAND.text};margin:0 0 24px;line-height:1.6;">
+      You can track the status of your request from your dashboard.
+      We'll notify you by email as soon as the alumni responds.
+    </p>
+
+    ${actionBtn(dashboardLink, "Track My Request")}
+  `);
+
+// ── Template 7: Alumni Availability Notification (to Candidate) ──────────
+const availabilityNotificationToCandidate = ({
+  candidateName,
+  alumniName,
+  alumniCompany,
+  requestType,
+  targetJobRole,
+  targetCompany,
+  availabilityDate,
+  availabilityTime,
+  availabilityNotes,
+  dashboardLink,
+}) =>
+  baseWrapper(`
+    <p style="font-size:16px;color:${BRAND.text};margin:0 0 8px;">
+      Hi <strong>${candidateName}</strong>,
+    </p>
+    <p style="font-size:22px;font-weight:800;color:#7C3AED;margin:0 0 8px;">
+      ${alumniName} has shared their availability!
+    </p>
+    <p style="font-size:15px;color:${BRAND.textSecondary};margin:0 0 24px;line-height:1.6;">
+      <strong>${alumniName}</strong> (${alumniCompany}) has proposed a date and time to connect
+      with you regarding your
+      <strong>${requestType === "referral" ? "job referral" : "professional reference"}</strong>
+      request.
+    </p>
+
+    <p style="margin:0 0 20px;">
+      ${badge("Meeting Availability Shared", "#7C3AED")}
+    </p>
+
+    <!-- Proposed Schedule -->
+    <div style="background:#F5F3FF;border:2px solid #DDD6FE;border-radius:10px;
+                padding:20px;margin-bottom:24px;text-align:center;">
+      <p style="margin:0 0 8px;font-size:13px;font-weight:700;
+                text-transform:uppercase;letter-spacing:.05em;color:#7C3AED;">
+        PROPOSED MEETING SCHEDULE
+      </p>
+      <p style="margin:0 0 4px;font-size:28px;font-weight:800;color:${BRAND.text};">
+        ${availabilityDate}
+      </p>
+      <p style="margin:0;font-size:20px;font-weight:600;color:#7C3AED;">
+        ${availabilityTime}
+      </p>
+    </div>
+
+    ${
+      availabilityNotes
+        ? `<div style="background:#FFFBEB;border-left:4px solid #F59E0B;
+                      padding:16px;border-radius:0 8px 8px 0;margin-bottom:24px;">
+            <p style="margin:0 0 6px;font-size:12px;font-weight:700;
+                      text-transform:uppercase;color:#92400E;">
+              NOTE FROM ${alumniName.toUpperCase()}
+            </p>
+            <p style="margin:0;font-size:14px;color:${BRAND.text};line-height:1.7;">
+              ${availabilityNotes}
+            </p>
+          </div>`
+        : ""
+    }
+
+    <div style="background:${BRAND.bg};border-radius:8px;padding:16px;margin-bottom:24px;">
+      <table cellpadding="0" cellspacing="0" style="width:100%;">
+        ${detailRow("Alumni", `${alumniName} — ${alumniCompany}`)}
+        ${detailRow("Request Type", requestType === "referral" ? "Job Referral" : "Professional Reference")}
+        ${detailRow("Target Role", targetJobRole)}
+        ${detailRow("Target Company", targetCompany)}
+      </table>
+    </div>
+
+    <p style="font-size:14px;color:${BRAND.text};margin:0 0 24px;line-height:1.6;">
+      Please reach out to <strong>${alumniName}</strong> to confirm this meeting time.
+      You can also view your full request history from your dashboard.
+    </p>
+
+    ${actionBtn(dashboardLink, "View My Requests Dashboard")}
+  `);
+
 module.exports = {
   newRequestToAlumni,
   acceptanceToCandidate,
   rejectionToCandidate,
   additionalInfoToCandidate,
   completionToCandidate,
+  submissionConfirmationToCandidate,
+  availabilityNotificationToCandidate,
 };
