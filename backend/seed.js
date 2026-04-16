@@ -16,7 +16,7 @@ const supabase = createClient(
 const ALUMNI_SEED = [
   {
     full_name: "Priya Sharma",
-    email: "priya.sharma@example.com",
+    email: "sreechandanamakkapati@gmail.com",
     company: "TCS",
     job_role: "Software Engineer",
     technologies: ["React", "Node.js", "MongoDB", "JavaScript"],
@@ -33,7 +33,7 @@ const ALUMNI_SEED = [
   },
   {
     full_name: "Ravi Kumar",
-    email: "ravi.kumar@example.com",
+    email: "sreechandanamakkapati@gmail.com",
     company: "Infosys",
     job_role: "Java Developer",
     technologies: ["Java", "Spring Boot", "MySQL", "Hibernate"],
@@ -50,7 +50,7 @@ const ALUMNI_SEED = [
   },
   {
     full_name: "Ananya Reddy",
-    email: "ananya.reddy@example.com",
+    email: "sreechandanamakkapati@gmail.com",
     company: "Wipro",
     job_role: "Data Analyst",
     technologies: ["Python", "SQL", "Power BI", "Pandas"],
@@ -67,7 +67,7 @@ const ALUMNI_SEED = [
   },
   {
     full_name: "Mohammed Farhan",
-    email: "farhan.m@example.com",
+    email: "sreechandanamakkapati@gmail.com",
     company: "Capgemini",
     job_role: "QA Engineer",
     technologies: ["Selenium", "Jira", "Manual Testing", "Postman"],
@@ -84,7 +84,7 @@ const ALUMNI_SEED = [
   },
   {
     full_name: "Sneha Patel",
-    email: "sneha.patel@example.com",
+    email: "sreechandanamakkapati@gmail.com",
     company: "HCL Technologies",
     job_role: "DevOps Engineer",
     technologies: ["AWS", "Docker", "Jenkins", "Kubernetes"],
@@ -101,7 +101,7 @@ const ALUMNI_SEED = [
   },
   {
     full_name: "Kiran Babu",
-    email: "kiran.babu@example.com",
+    email: "sreechandanamakkapati@gmail.com",
     company: "Tech Mahindra",
     job_role: "Android Developer",
     technologies: ["Kotlin", "Android", "Firebase", "Jetpack Compose"],
@@ -118,7 +118,7 @@ const ALUMNI_SEED = [
   },
   {
     full_name: "Divya Menon",
-    email: "divya.menon@example.com",
+    email: "sreechandanamakkapati@gmail.com",
     company: "Accenture",
     job_role: "React Developer",
     technologies: ["React", "TypeScript", "Redux", "GraphQL"],
@@ -135,7 +135,7 @@ const ALUMNI_SEED = [
   },
   {
     full_name: "Arjun Nair",
-    email: "arjun.nair@example.com",
+    email: "sreechandanamakkapati@gmail.com",
     company: "Cognizant",
     job_role: "Full Stack Developer",
     technologies: ["Angular", "Node.js", "PostgreSQL", "Docker"],
