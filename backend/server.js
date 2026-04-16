@@ -21,8 +21,19 @@ app.use("/api/alumni",   require("./routes/alumni"));
 app.use("/api/referrals", require("./routes/referral"));
 app.use("/api/upload",   require("./routes/upload"));
 
-// Health check
+// Health check — also surfaces missing env vars for easier debugging
 app.get("/api/health", (req, res) => {
+  const required = ["SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY", "JWT_SECRET"];
+  const missing  = required.filter((v) => !process.env[v]);
+
+  if (missing.length) {
+    return res.status(500).json({
+      status:  "error",
+      message: `Missing environment variables: ${missing.join(", ")}. Set them in Vercel → Project → Settings → Environment Variables.`,
+      missing,
+    });
+  }
+
   res.json({
     status:    "ok",
     message:   "NCPL Alumni Connect API is running",
