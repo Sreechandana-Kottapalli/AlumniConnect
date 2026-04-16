@@ -1,6 +1,24 @@
 const nodemailer = require("nodemailer");
 const templates = require("../templates/emailTemplates");
 
+// ── Env-var validation ────────────────────────────────────────────────────
+/**
+ * Throws a descriptive error if the required SMTP env vars are absent.
+ * Call this before attempting to send any mail.
+ */
+const validateEmailConfig = () => {
+  if (process.env.NODE_ENV === "test") return; // skip in test mode
+
+  const missing = ["EMAIL_USER", "EMAIL_PASS"].filter((k) => !process.env[k]);
+  if (missing.length) {
+    throw new Error(
+      `Email not configured — missing env var(s): ${missing.join(", ")}. ` +
+        "Go to Vercel → Project → Settings → Environment Variables and add " +
+        "EMAIL_USER (your Gmail address) and EMAIL_PASS (a Gmail App Password)."
+    );
+  }
+};
+
 // ── Transporter factory ───────────────────────────────────────────────────
 const createTransporter = () => {
   if (process.env.NODE_ENV === "test") {
@@ -11,6 +29,8 @@ const createTransporter = () => {
       auth: { user: "test@ethereal.email", pass: "testpass" },
     });
   }
+
+  validateEmailConfig(); // throws if EMAIL_USER / EMAIL_PASS are missing
 
   return nodemailer.createTransport({
     host: process.env.EMAIL_HOST || "smtp.gmail.com",
@@ -81,6 +101,35 @@ const notifyAlumniNewRequest = async ({ request, alumni, candidate }) => {
   await sendMail({
     to: alumni.email,
     subject: `New ${request.requestType === "referral" ? "Referral" : "Reference"} Request from ${candidate.name}`,
+    html,
+  });
+};
+
+/**
+ * Confirm to the candidate that their request was submitted successfully.
+ * Includes all submitted details so they have a record of what was sent.
+ */
+const notifyCandidateRequestSubmitted = async ({ request, alumni, candidate }) => {
+  const { dashboardLink } = buildLinks(request._id);
+  const html = templates.submissionConfirmationToCandidate({
+    candidateName:  candidate.name,
+    alumniName:     alumni.fullName,
+    alumniCompany:  alumni.company,
+    alumniJobTitle: alumni.jobRole,
+    requestType:    request.requestType,
+    targetJobRole:  request.targetJobRole,
+    targetCompany:  request.targetCompany,
+    jobDescriptionUrl: request.jobDescriptionUrl,
+    linkedinUrl:    request.linkedinUrl,
+    portfolioUrl:   request.portfolioUrl,
+    personalMessage: request.personalMessage,
+    resumeUrl:      request.resumeUrl,
+    dashboardLink,
+  });
+
+  await sendMail({
+    to: candidate.email,
+    subject: `Your ${request.requestType === "referral" ? "Referral" : "Reference"} Request Has Been Submitted`,
     html,
   });
 };
@@ -175,7 +224,9 @@ const notifyCandidateCompleted = async ({ request, alumni, candidate }) => {
 };
 
 module.exports = {
+  validateEmailConfig,
   notifyAlumniNewRequest,
+  notifyCandidateRequestSubmitted,
   notifyCandidateAccepted,
   notifyCandidateRejected,
   notifyCandidateAdditionalInfo,

@@ -9,7 +9,12 @@ const emailService    = require("../services/emailService");
 const handleValidation = (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    res.status(422).json({ success: false, errors: errors.array() });
+    const first = errors.array()[0];
+    res.status(422).json({
+      success: false,
+      message: first.msg,   // surfaces to the frontend error toast
+      errors: errors.array(),
+    });
     return false;
   }
   return true;
@@ -34,6 +39,7 @@ const createRequest = async (req, res, next) => {
       jobDescriptionUrl,
       resumeUrl,
       resumePath,
+      resumePublicId, // frontend sends publicId from the upload response
       linkedinUrl,
       portfolioUrl,
       personalMessage,
@@ -66,16 +72,28 @@ const createRequest = async (req, res, next) => {
       targetCompany,
       jobDescriptionUrl,
       resumeUrl,
-      resumePath,
+      resumePath: resumePath || resumePublicId || null,
       linkedinUrl,
       portfolioUrl,
       personalMessage,
     });
 
-    // Non-blocking email notification
+    // Non-blocking: notify the alumni of the new request
     emailService
       .notifyAlumniNewRequest({ request, alumni, candidate: req.user })
-      .catch((err) => console.error("Email error (new request):", err.message));
+      .catch((err) => {
+        console.error("[Email] alumni notify failed:", err.message);
+        if (err.message.includes("not configured") || err.message.includes("missing env var")) {
+          console.error("[Email] Fix: set EMAIL_USER and EMAIL_PASS in Vercel env vars.");
+        }
+      });
+
+    // Non-blocking: send submission confirmation to the candidate
+    emailService
+      .notifyCandidateRequestSubmitted({ request, alumni, candidate: req.user })
+      .catch((err) => {
+        console.error("[Email] candidate confirm failed:", err.message);
+      });
 
     res.status(201).json({
       success: true,
@@ -262,7 +280,7 @@ const updateStatus = async (req, res, next) => {
 
     if (emailMap[status]) {
       emailMap[status]().catch((err) =>
-        console.error(`Email error (${status}):`, err.message)
+        console.error(`[Email] status-update (${status}) failed:`, err.message)
       );
     }
 
