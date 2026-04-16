@@ -118,7 +118,7 @@ const ALUMNI_SEED = [
   },
   {
     full_name: "Divya Menon",
-    email: "divya@example.com",
+    email: "siva.gattu007@gmail.com",
     company: "Accenture",
     job_role: "React Developer",
     technologies: ["React", "TypeScript", "Redux", "GraphQL"],
