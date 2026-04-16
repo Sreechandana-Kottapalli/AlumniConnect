@@ -86,6 +86,35 @@ const notifyAlumniNewRequest = async ({ request, alumni, candidate }) => {
 };
 
 /**
+ * Confirm to the candidate that their request was submitted successfully.
+ * Includes all submitted details so they have a record of what was sent.
+ */
+const notifyCandidateRequestSubmitted = async ({ request, alumni, candidate }) => {
+  const { dashboardLink } = buildLinks(request._id);
+  const html = templates.submissionConfirmationToCandidate({
+    candidateName:  candidate.name,
+    alumniName:     alumni.fullName,
+    alumniCompany:  alumni.company,
+    alumniJobTitle: alumni.jobRole,
+    requestType:    request.requestType,
+    targetJobRole:  request.targetJobRole,
+    targetCompany:  request.targetCompany,
+    jobDescriptionUrl: request.jobDescriptionUrl,
+    linkedinUrl:    request.linkedinUrl,
+    portfolioUrl:   request.portfolioUrl,
+    personalMessage: request.personalMessage,
+    resumeUrl:      request.resumeUrl,
+    dashboardLink,
+  });
+
+  await sendMail({
+    to: candidate.email,
+    subject: `Your ${request.requestType === "referral" ? "Referral" : "Reference"} Request Has Been Submitted`,
+    html,
+  });
+};
+
+/**
  * Notify candidate that their request was accepted.
  */
 const notifyCandidateAccepted = async ({ request, alumni, candidate }) => {
@@ -176,6 +205,7 @@ const notifyCandidateCompleted = async ({ request, alumni, candidate }) => {
 
 module.exports = {
   notifyAlumniNewRequest,
+  notifyCandidateRequestSubmitted,
   notifyCandidateAccepted,
   notifyCandidateRejected,
   notifyCandidateAdditionalInfo,

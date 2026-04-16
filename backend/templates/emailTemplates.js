@@ -390,10 +390,92 @@ const completionToCandidate = ({
     ${actionBtn(dashboardLink, "View Dashboard")}
   `);
 
+// ── Template 6: Submission Confirmation (to Candidate) ───────────────────
+const submissionConfirmationToCandidate = ({
+  candidateName,
+  alumniName,
+  alumniCompany,
+  alumniJobTitle,
+  requestType,
+  targetJobRole,
+  targetCompany,
+  jobDescriptionUrl,
+  linkedinUrl,
+  portfolioUrl,
+  personalMessage,
+  resumeUrl,
+  dashboardLink,
+}) =>
+  baseWrapper(`
+    <p style="font-size:16px;color:${BRAND.text};margin:0 0 8px;">
+      Hi <strong>${candidateName}</strong>,
+    </p>
+    <p style="font-size:22px;font-weight:800;color:${BRAND.primary};margin:0 0 8px;">
+      Request Submitted Successfully!
+    </p>
+    <p style="font-size:15px;color:${BRAND.textSecondary};margin:0 0 24px;line-height:1.6;">
+      Your <strong>${requestType === "referral" ? "Job Referral" : "Professional Reference"}</strong>
+      request has been sent to <strong>${alumniName}</strong>
+      (${alumniJobTitle} at ${alumniCompany}).
+      You will be notified once they respond.
+    </p>
+
+    <!-- Badge -->
+    <p style="margin:0 0 20px;">
+      ${badge(
+        requestType === "referral" ? "Job Referral Request" : "Professional Reference Request",
+        requestType === "referral" ? BRAND.primary : "#7C3AED"
+      )}
+    </p>
+
+    <!-- Request Summary -->
+    <div style="background:${BRAND.bg};border-radius:8px;padding:16px;margin-bottom:24px;">
+      <p style="margin:0 0 12px;font-size:13px;font-weight:700;
+                text-transform:uppercase;letter-spacing:.05em;color:${BRAND.textSecondary};">
+        REQUEST SUMMARY
+      </p>
+      <table cellpadding="0" cellspacing="0" style="width:100%;">
+        ${detailRow("Sent To", `${alumniName} — ${alumniJobTitle} at ${alumniCompany}`)}
+        ${detailRow("Request Type", requestType === "referral" ? "Job Referral" : "Professional Reference")}
+        ${detailRow("Target Role", targetJobRole)}
+        ${detailRow("Target Company", targetCompany)}
+        ${linkedinUrl ? detailRow("LinkedIn", `<a href="${linkedinUrl}" style="color:${BRAND.primary};">${linkedinUrl}</a>`) : ""}
+        ${portfolioUrl ? detailRow("Portfolio", `<a href="${portfolioUrl}" style="color:${BRAND.primary};">${portfolioUrl}</a>`) : ""}
+        ${jobDescriptionUrl ? detailRow("Job Link", `<a href="${jobDescriptionUrl}" style="color:${BRAND.primary};">View Job Description</a>`) : ""}
+        ${detailRow("Status", badge("Pending", "#F59E0B"))}
+      </table>
+    </div>
+
+    <!-- Personal Message -->
+    <div style="background:#EFF6FF;border-left:4px solid ${BRAND.primary};
+                padding:16px;border-radius:0 8px 8px 0;margin-bottom:24px;">
+      <p style="margin:0 0 6px;font-size:12px;font-weight:700;
+                text-transform:uppercase;letter-spacing:.05em;color:${BRAND.primary};">
+        YOUR MESSAGE
+      </p>
+      <p style="margin:0;font-size:14px;color:${BRAND.text};line-height:1.7;">
+        ${personalMessage}
+      </p>
+    </div>
+
+    <!-- Resume Link -->
+    <p style="margin:0 0 24px;">
+      ${actionBtn(resumeUrl, "📄  View Submitted Resume (PDF)", "#0891B2")}
+    </p>
+
+    <p style="font-size:14px;color:${BRAND.text};margin:0 0 24px;line-height:1.6;">
+      You can track the status of your request from your dashboard.
+      We'll notify you by email as soon as the alumni responds.
+    </p>
+
+    ${actionBtn(dashboardLink, "Track My Request")}
+  `);
+
 module.exports = {
   newRequestToAlumni,
   acceptanceToCandidate,
   rejectionToCandidate,
   additionalInfoToCandidate,
   completionToCandidate,
+  submissionConfirmationToCandidate,
 };

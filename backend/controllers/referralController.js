@@ -78,10 +78,15 @@ const createRequest = async (req, res, next) => {
       personalMessage,
     });
 
-    // Non-blocking email notification
+    // Non-blocking: notify the alumni of the new request
     emailService
       .notifyAlumniNewRequest({ request, alumni, candidate: req.user })
-      .catch((err) => console.error("Email error (new request):", err.message));
+      .catch((err) => console.error("Email error (alumni notify):", err.message));
+
+    // Non-blocking: send submission confirmation to the candidate
+    emailService
+      .notifyCandidateRequestSubmitted({ request, alumni, candidate: req.user })
+      .catch((err) => console.error("Email error (candidate confirm):", err.message));
 
     res.status(201).json({
       success: true,
