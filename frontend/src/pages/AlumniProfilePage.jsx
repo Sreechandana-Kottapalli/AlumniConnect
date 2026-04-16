@@ -146,11 +146,15 @@ export default function AlumniProfilePage() {
                   </Link>
                   {alumni.email && (
                     <a
-                      href={`mailto:${alumni.email}?subject=${encodeURIComponent(
+                      href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
+                        alumni.email
+                      )}&su=${encodeURIComponent(
                         "Reaching out via NCPL Alumni Connect"
                       )}&body=${encodeURIComponent(
                         `Hi ${alumni.fullName},\n\nI found your profile on NCPL Alumni Connect and would like to connect with you.\n\nMy name is ${user?.name || ""}.\n\nLooking forward to hearing from you!\n\nBest regards,\n${user?.name || ""}`
                       )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       style={{
                         display: "inline-flex",
                         alignItems: "center",
