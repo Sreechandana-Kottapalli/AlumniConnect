@@ -67,7 +67,7 @@ const ALUMNI_SEED = [
   },
   {
     full_name: "Mohammed Farhan",
-    email: "sreechandanamakkapati@gmail.com",
+    email: "siva.gattuoo8@gmail.com",
     company: "Capgemini",
     job_role: "QA Engineer",
     technologies: ["Selenium", "Jira", "Manual Testing", "Postman"],
