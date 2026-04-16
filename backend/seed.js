@@ -101,7 +101,7 @@ const ALUMNI_SEED = [
   },
   {
     full_name: "Kiran Babu",
-    email: "siva.gattu007@gmail.com",
+    email: "kiran@example.com",
     company: "Tech Mahindra",
     job_role: "Android Developer",
     technologies: ["Kotlin", "Android", "Firebase", "Jetpack Compose"],
@@ -135,7 +135,7 @@ const ALUMNI_SEED = [
   },
   {
     full_name: "Arjun Nair",
-    email: "arjun@example.com",
+    email: "siva.gattu007@gmail.com.com",
     company: "Cognizant",
     job_role: "Full Stack Developer",
     technologies: ["Angular", "Node.js", "PostgreSQL", "Docker"],
