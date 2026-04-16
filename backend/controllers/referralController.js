@@ -9,7 +9,12 @@ const emailService    = require("../services/emailService");
 const handleValidation = (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    res.status(422).json({ success: false, errors: errors.array() });
+    const first = errors.array()[0];
+    res.status(422).json({
+      success: false,
+      message: first.msg,   // surfaces to the frontend error toast
+      errors: errors.array(),
+    });
     return false;
   }
   return true;
@@ -34,6 +39,7 @@ const createRequest = async (req, res, next) => {
       jobDescriptionUrl,
       resumeUrl,
       resumePath,
+      resumePublicId, // frontend sends publicId from the upload response
       linkedinUrl,
       portfolioUrl,
       personalMessage,
@@ -66,7 +72,7 @@ const createRequest = async (req, res, next) => {
       targetCompany,
       jobDescriptionUrl,
       resumeUrl,
-      resumePath,
+      resumePath: resumePath || resumePublicId || null,
       linkedinUrl,
       portfolioUrl,
       personalMessage,

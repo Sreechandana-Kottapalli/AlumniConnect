@@ -25,7 +25,7 @@ router.post(
   "/",
   referralLimiter,
   [
-    body("alumniId").notEmpty().isMongoId().withMessage("Valid alumni ID is required"),
+    body("alumniId").notEmpty().isUUID().withMessage("Valid alumni ID is required"),
     body("requestType")
       .isIn(["referral", "reference"])
       .withMessage("requestType must be 'referral' or 'reference'"),
