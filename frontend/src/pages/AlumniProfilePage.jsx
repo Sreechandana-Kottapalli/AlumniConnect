@@ -144,6 +144,29 @@ export default function AlumniProfilePage() {
                   >
                     📝 Request Reference
                   </Link>
+                  {alumni.email && (
+                    <a
+                      href={`mailto:${alumni.email}?subject=${encodeURIComponent(
+                        "Reaching out via NCPL Alumni Connect"
+                      )}&body=${encodeURIComponent(
+                        `Hi ${alumni.fullName},\n\nI found your profile on NCPL Alumni Connect and would like to connect with you.\n\nMy name is ${user?.name || ""}.\n\nLooking forward to hearing from you!\n\nBest regards,\n${user?.name || ""}`
+                      )}`}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        padding: "10px 20px",
+                        background: "#059669",
+                        color: "#fff",
+                        borderRadius: "8px",
+                        fontSize: "13px",
+                        fontWeight: "700",
+                        textDecoration: "none",
+                      }}
+                    >
+                      ✉️ Mail Request
+                    </a>
+                  )}
                 </div>
               </div>
 
