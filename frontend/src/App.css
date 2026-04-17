@@ -84,10 +84,11 @@ input, select { font-family: inherit; }
   box-shadow: var(--shadow-lg);
 }
 .auth-logo { display: flex; align-items: center; gap: 10px; justify-content: center; margin-bottom: 8px; }
-.auth-logo-icon {
-  width: 44px; height: 44px; background: var(--primary);
-  border-radius: 10px; display: flex; align-items: center; justify-content: center;
-  font-weight: 800; font-size: 22px; color: var(--secondary);
+.auth-logo-img {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  object-fit: cover;
+  display: block;
 }
 .auth-logo-text { font-size: 22px; font-weight: 800; color: var(--primary); }
 .auth-subtitle { text-align: center; color: var(--text-secondary); font-size: 14px; margin-bottom: 28px; }

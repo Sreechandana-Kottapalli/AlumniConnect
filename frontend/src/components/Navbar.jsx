@@ -25,9 +25,16 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Brand */}
           <Link to="/search" className="flex items-center gap-2.5">
-            <span className="w-9 h-9 bg-[#F4A823] rounded-lg flex items-center justify-center font-extrabold text-lg text-[#1A3C6E]">
-              N
-            </span>
+            <img
+              src="/ncpl-logo.png"
+              alt="NCPL"
+              className="w-9 h-9 rounded-lg object-cover flex-shrink-0"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src =
+                  "https://media.licdn.com/dms/image/v2/D560BAQHb8YGr2pLlkg/company-logo_200_200/company-logo_200_200/0/1718865466422/ncpl_consulting_logo?e=2147483647&v=beta&t=r0zsFPh5cflLZ3thlKIYUJZXcj4TvfF3KmpR3Q2KSAs";
+              }}
+            />
             <span className="text-white font-bold text-[17px] hidden sm:block">
               NCPL Alumni Connect
             </span>
