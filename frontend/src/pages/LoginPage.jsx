@@ -78,7 +78,16 @@ export default function LoginPage() {
       <div className="auth-card">
         {/* Logo */}
         <div className="auth-logo">
-          <div className="auth-logo-icon">N</div>
+          <img
+            src="/ncpl-logo.png"
+            alt="NCPL"
+            className="auth-logo-img"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src =
+                "https://media.licdn.com/dms/image/v2/D560BAQHb8YGr2pLlkg/company-logo_200_200/company-logo_200_200/0/1718865466422/ncpl_consulting_logo?e=2147483647&v=beta&t=r0zsFPh5cflLZ3thlKIYUJZXcj4TvfF3KmpR3Q2KSAs";
+            }}
+          />
           <span className="auth-logo-text">NCPL Alumni</span>
         </div>
         <p className="auth-subtitle">Connect with placed alumni. Get mentored.</p>
