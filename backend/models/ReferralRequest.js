@@ -33,6 +33,8 @@ const mapRequest = (row) => {
     additionalInfoRequest: row.additional_info_request || null,
     statusHistory: row.status_history || [],
     completedAt: row.completed_at || null,
+    scheduledAt: row.scheduled_at || null,
+    scheduleNote: row.schedule_note || null,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -268,6 +270,22 @@ const hasDuplicate = async (candidateId, alumniId, requestType) => {
   return data && data.length > 0;
 };
 
+// ── updateSchedule ────────────────────────────────────────────────────────────
+const updateSchedule = async (id, { scheduledAt, scheduleNote }) => {
+  const { data, error } = await supabase
+    .from("referral_requests")
+    .update({
+      scheduled_at:  scheduledAt,
+      schedule_note: scheduleNote || null,
+    })
+    .eq("id", id)
+    .select("*")
+    .single();
+
+  if (error) throw error;
+  return mapRequest(data);
+};
+
 // ── countByStatus ─────────────────────────────────────────────────────────────
 // filter: { candidate_id } OR { alumni_ids: [...] }
 const countByStatus = async (filter = {}) => {
@@ -297,6 +315,7 @@ module.exports = {
   findByAlumniIds,
   findAll,
   updateStatus,
+  updateSchedule,
   deleteById,
   hasDuplicate,
   countByStatus,

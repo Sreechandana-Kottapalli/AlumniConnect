@@ -135,7 +135,7 @@ const ALUMNI_SEED = [
   },
   {
     full_name: "Arjun Nair",
-    email: "siva.gattu007@gmail.com.com",
+    email: "siva.gattu007@gmail.com",
     company: "Cognizant",
     job_role: "Full Stack Developer",
     technologies: ["Angular", "Node.js", "PostgreSQL", "Docker"],

@@ -46,10 +46,11 @@ const sendMail = async ({ to, subject, html }) => {
 const buildLinks = (requestId) => {
   const base = process.env.FRONTEND_URL || "http://localhost:3000";
   return {
-    acceptLink: `${base}/alumni/requests?action=accept&id=${requestId}`,
-    rejectLink: `${base}/alumni/requests?action=reject&id=${requestId}`,
+    acceptLink:      `${base}/alumni/requests?action=accept&id=${requestId}`,
+    rejectLink:      `${base}/alumni/requests?action=reject&id=${requestId}`,
     requestInfoLink: `${base}/alumni/requests?action=info&id=${requestId}`,
-    dashboardLink: `${base}/referrals`,
+    scheduleLink:    `${base}/schedule/${requestId}`,
+    dashboardLink:   `${base}/referrals`,
   };
 };
 
@@ -75,6 +76,7 @@ const notifyAlumniNewRequest = async ({ request, alumni, candidate }) => {
     acceptLink: links.acceptLink,
     rejectLink: links.rejectLink,
     requestInfoLink: links.requestInfoLink,
+    scheduleLink: links.scheduleLink,
     requestId: request._id,
   });
 
@@ -203,6 +205,29 @@ const notifyCandidateCompleted = async ({ request, alumni, candidate }) => {
   });
 };
 
+/**
+ * Notify candidate that the alumni has scheduled a meeting / call.
+ */
+const notifyCandidateScheduled = async ({ request, alumni, candidate }) => {
+  const { dashboardLink } = buildLinks(request._id);
+  const html = templates.scheduledMeetingToCandidate({
+    candidateName:  candidate.name,
+    alumniName:     alumni.fullName,
+    alumniCompany:  alumni.company,
+    alumniJobTitle: alumni.jobRole,
+    requestType:    request.requestType,
+    scheduledAt:    request.scheduledAt,
+    scheduleNote:   request.scheduleNote,
+    dashboardLink,
+  });
+
+  await sendMail({
+    to:      candidate.email,
+    subject: `${alumni.fullName} Has Scheduled a Meeting With You`,
+    html,
+  });
+};
+
 module.exports = {
   notifyAlumniNewRequest,
   notifyCandidateRequestSubmitted,
@@ -210,4 +235,5 @@ module.exports = {
   notifyCandidateRejected,
   notifyCandidateAdditionalInfo,
   notifyCandidateCompleted,
+  notifyCandidateScheduled,
 };

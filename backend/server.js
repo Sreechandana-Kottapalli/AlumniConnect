@@ -21,6 +21,11 @@ app.use("/api/alumni",   require("./routes/alumni"));
 app.use("/api/referrals", require("./routes/referral"));
 app.use("/api/upload",   require("./routes/upload"));
 
+// Public schedule routes (no auth — accessed from email links)
+const scheduleCtrl = require("./controllers/scheduleController");
+app.get("/api/schedule/:requestId",  scheduleCtrl.getScheduleInfo);
+app.post("/api/schedule/:requestId", scheduleCtrl.submitSchedule);
+
 // Health check — also surfaces missing env vars for easier debugging
 app.get("/api/health", (req, res) => {
   const required = ["SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY", "JWT_SECRET"];

@@ -12,6 +12,7 @@ import AlumniProfilePage from "./pages/AlumniProfilePage";
 import ReferralDashboard from "./pages/ReferralDashboard";
 import AlumniRequestPanel from "./pages/AlumniRequestPanel";
 import RequestForm from "./pages/RequestForm";
+import SchedulePage from "./pages/SchedulePage";
 
 function PrivateRoute({ children }) {
   const { isAuthenticated, loading } = useAuth();
@@ -83,6 +84,9 @@ export default function App() {
               </PrivateRoute>
             }
           />
+
+          {/* Public schedule route — no login required */}
+          <Route path="/schedule/:requestId" element={<SchedulePage />} />
 
           {/* Default */}
           <Route path="*" element={<Navigate to="/search" replace />} />
