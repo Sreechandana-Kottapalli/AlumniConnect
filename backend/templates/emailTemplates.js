@@ -109,6 +109,7 @@ const newRequestToAlumni = ({
   acceptLink,
   rejectLink,
   requestInfoLink,
+  scheduleLink,
   requestId,
 }) =>
   baseWrapper(`
@@ -167,11 +168,24 @@ const newRequestToAlumni = ({
     <p style="margin:0 0 8px;font-size:14px;font-weight:700;color:${BRAND.text};">
       Respond to this request:
     </p>
-    <p style="margin:0 0 24px;">
+    <p style="margin:0 0 16px;">
       ${actionBtn(acceptLink, "✓  Accept", BRAND.success)}
       ${actionBtn(rejectLink, "✗  Decline", BRAND.error)}
       ${actionBtn(requestInfoLink, "?  Request More Info", "#F59E0B")}
     </p>
+
+    <!-- Schedule Meeting -->
+    <div style="background:#F5F3FF;border:1px solid #DDD6FE;border-radius:8px;
+                padding:16px;margin-bottom:24px;">
+      <p style="margin:0 0 8px;font-size:13px;font-weight:700;color:#5B21B6;">
+        📅 Want to schedule a meeting or call?
+      </p>
+      <p style="margin:0 0 12px;font-size:13px;color:${BRAND.textSecondary};line-height:1.5;">
+        Pick a convenient date and time to connect with ${candidateName}.
+        They will receive an email notification with your chosen schedule.
+      </p>
+      ${actionBtn(scheduleLink, "📅  Schedule a Meeting / Call", "#7C3AED")}
+    </div>
 
     <p style="font-size:12px;color:${BRAND.textSecondary};margin:0;">
       Request ID: <code>${requestId}</code> — You can also manage this request
@@ -471,6 +485,78 @@ const submissionConfirmationToCandidate = ({
     ${actionBtn(dashboardLink, "Track My Request")}
   `);
 
+// ── Template 7: Schedule Confirmation (to Candidate) ─────────────────────
+const scheduledMeetingToCandidate = ({
+  candidateName,
+  alumniName,
+  alumniCompany,
+  alumniJobTitle,
+  requestType,
+  scheduledAt,
+  scheduleNote,
+  dashboardLink,
+}) => {
+  const formattedDate = new Date(scheduledAt).toLocaleString("en-IN", {
+    weekday: "long",
+    year:    "numeric",
+    month:   "long",
+    day:     "numeric",
+    hour:    "2-digit",
+    minute:  "2-digit",
+    timeZoneName: "short",
+  });
+
+  return baseWrapper(`
+    <p style="font-size:16px;color:${BRAND.text};margin:0 0 8px;">
+      Hi <strong>${candidateName}</strong>,
+    </p>
+    <p style="font-size:22px;font-weight:800;color:#7C3AED;margin:0 0 8px;">
+      📅 Meeting Scheduled!
+    </p>
+    <p style="font-size:15px;color:${BRAND.textSecondary};margin:0 0 24px;line-height:1.6;">
+      <strong>${alumniName}</strong> (${alumniJobTitle} at ${alumniCompany}) has scheduled
+      a meeting with you regarding your
+      <strong>${requestType === "referral" ? "Job Referral" : "Professional Reference"}</strong>
+      request. Please keep this time slot free.
+    </p>
+
+    <!-- Schedule Details -->
+    <div style="background:#F5F3FF;border:2px solid #7C3AED;border-radius:8px;
+                padding:20px;margin-bottom:24px;text-align:center;">
+      <p style="margin:0 0 6px;font-size:12px;font-weight:700;text-transform:uppercase;
+                letter-spacing:.05em;color:#5B21B6;">SCHEDULED DATE &amp; TIME</p>
+      <p style="margin:0;font-size:20px;font-weight:800;color:#5B21B6;">${formattedDate}</p>
+    </div>
+
+    <div style="background:${BRAND.bg};border-radius:8px;padding:16px;margin-bottom:24px;">
+      <table cellpadding="0" cellspacing="0" style="width:100%;">
+        ${detailRow("Alumni", `${alumniName} — ${alumniJobTitle} at ${alumniCompany}`)}
+        ${detailRow("Request Type", requestType === "referral" ? "Job Referral" : "Professional Reference")}
+      </table>
+    </div>
+
+    ${scheduleNote
+      ? `<div style="background:#EFF6FF;border-left:4px solid ${BRAND.primary};
+                    padding:16px;border-radius:0 8px 8px 0;margin-bottom:24px;">
+          <p style="margin:0 0 6px;font-size:12px;font-weight:700;
+                    text-transform:uppercase;letter-spacing:.05em;color:${BRAND.primary};">
+            NOTE FROM ${alumniName.toUpperCase()}
+          </p>
+          <p style="margin:0;font-size:14px;color:${BRAND.text};line-height:1.7;">
+            ${scheduleNote}
+          </p>
+        </div>`
+      : ""}
+
+    <p style="font-size:14px;color:${BRAND.text};margin:0 0 24px;line-height:1.6;">
+      Make sure you are prepared and available at the scheduled time.
+      Good luck with your meeting!
+    </p>
+
+    ${actionBtn(dashboardLink, "View My Requests Dashboard")}
+  `);
+};
+
 module.exports = {
   newRequestToAlumni,
   acceptanceToCandidate,
@@ -478,4 +564,5 @@ module.exports = {
   additionalInfoToCandidate,
   completionToCandidate,
   submissionConfirmationToCandidate,
+  scheduledMeetingToCandidate,
 };
